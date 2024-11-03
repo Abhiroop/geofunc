@@ -1,8 +1,8 @@
 module Main where
 
-import Start
+import SquareLimit
 import System.Environment
 
 main :: IO ()
 main =
-  withArgs ["-o", "circle.svg", "-w", "400"] mainMethod
+  withArgs ["-o", "sqlimit.svg", "-w", "400"] mainMethod
