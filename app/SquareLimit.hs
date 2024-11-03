@@ -14,7 +14,7 @@ beside :: (Int, Int, Picture, Picture) -> Picture
 beside (m, n, p, q) = p to the left of q; width ratio (m : n)
 
 above :: (Int, Int, Picture, Picture) -> Picture
-above (m, n, p, q) = p on top of q; width ratio (m : n)
+above (m, n, p, q) = p on top of q; height ratio (m : n)
 
 rot :: Picture -> Picture
 rot p = 90 degrees anticlockwise rotation
@@ -22,8 +22,30 @@ rot p = 90 degrees anticlockwise rotation
 -}
 
 
-sqLimit :: Diagram B
-sqLimit = pseudolimit
+squareLimit :: Diagram B
+squareLimit = cycle corner
+
+corner = nonet corner2 side2 side2
+               (rot side2) uTile (rot tTile)
+               (rot side2) (rot tTile) (rot qTile)
+
+nonet p1 p2 p3 p4 p5 p6 p7 p8 p9
+  = onTopOf 1 2  (nextTo 1 2 p1 (nextTo 1 1 p2 p3))
+   (onTopOf 1 1  (nextTo 1 2 p4 (nextTo 1 1 p5 p6))
+                 (nextTo 1 2 p7 (nextTo 1 1 p8 p9)))
+
+nextTo m n d1 d2 = scaledD1 ||| scaledD2
+  where
+    scaledD1 = d1 # scaleX (m / total)
+    scaledD2 = d2 # scaleX (n / total)
+    total = m + n
+
+onTopOf m n d1 d2 = scaledD1 === scaledD2
+  where
+    scaledD1 = d1 # scaleY (m / total)
+    scaledD2 = d2 # scaleY (n / total)
+    total = m + n
+
 
 side1   = quartet blankTile blankTile (rot tTile) tTile
 side2   = quartet side1 side1 (rot tTile) tTile
@@ -131,7 +153,7 @@ markingsS = [
   [ (14^&11), (16^&12) ],
   [ (15^&9), (16^&10) ]
   ]
-mainMethod = mainWith sqLimit
+mainMethod = mainWith squareLimit
 
 
 -- Experiments

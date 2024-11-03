@@ -1,1 +1,3 @@
-### Functional Geometry
+## Functional Geometry
+
+![Escher](./sqlimit.svg)
