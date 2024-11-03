@@ -23,10 +23,15 @@ rot p = 90 degrees anticlockwise rotation
 
 
 sqLimit :: Diagram B
-sqLimit = side2
+sqLimit = pseudolimit
 
-side1 = quartet blankTile blankTile (rot tTile) tTile
-side2 = quartet side1 side1 (rot tTile) tTile
+side1   = quartet blankTile blankTile (rot tTile) tTile
+side2   = quartet side1 side1 (rot tTile) tTile
+corner1 = quartet blankTile blankTile blankTile uTile
+corner2 = quartet corner1 side1 (rot side1) uTile
+
+pseudocorner = quartet corner2 side2 (rot side2) (rot tTile)
+pseudolimit  = cycle pseudocorner
 
 example = cycle (rot tTile)
 
@@ -51,7 +56,7 @@ blankTile = lw none $ square 16
 
 makeTile :: [[P2 Double]] -> Diagram B
 makeTile =
-  lw thick . centerXY . mconcat . map fromVertices
+  lw thin . centerXY . mconcat . map fromVertices
 
 
 -- measurements from https://frank-buss.de/lisp/functional.html
