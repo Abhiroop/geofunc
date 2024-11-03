@@ -6,6 +6,7 @@ module SquareLimit where
 
 import Diagrams.Prelude
 import Diagrams.Backend.SVG.CmdLine
+import Prelude hiding (cycle)
 
 {- 1982 Henderson combinators
 
@@ -15,22 +16,38 @@ beside (m, n, p, q) = p to the left of q; width ratio (m : n)
 above :: (Int, Int, Picture, Picture) -> Picture
 above (m, n, p, q) = p on top of q; width ratio (m : n)
 
+rot :: Picture -> Picture
+rot p = 90 degrees anticlockwise rotation
+
 -}
 
 
-
 sqLimit :: Diagram B
-sqLimit = quartet pTile qTile rTile sTile
+sqLimit = side2
 
-quartet p q r s = (p ||| q) === (r ||| s)
+side1 = quartet blankTile blankTile (rot tTile) tTile
+side2 = quartet side1 side1 (rot tTile) tTile
 
-almostFish :: Diagram B
-almostFish = pTile === rTile
+example = cycle (rot tTile)
+
+uTile = cycle $ rot qTile
+tTile = quartet pTile qTile rTile sTile
+
+cycle p1 = quartet p1 (rot $ rot $ rot p1) (rot p1) (rot $ rot p1)
+
+cycle' p = quartet p (rot p) (rot (rot p)) (rot $ rot $ rot p)
+
+quartet p q r s = scale (1/2) $ centerXY ((p ||| q) === (r ||| s))
+
+rot p = rotate (90 @@ deg) p
 
 pTile = makeTile markingsP
 qTile = makeTile markingsQ
 rTile = makeTile markingsR
 sTile = makeTile markingsS
+
+blankTile :: Diagram B
+blankTile = lw none $ square 16
 
 makeTile :: [[P2 Double]] -> Diagram B
 makeTile =
@@ -110,3 +127,12 @@ markingsS = [
   [ (15^&9), (16^&10) ]
   ]
 mainMethod = mainWith sqLimit
+
+
+-- Experiments
+
+rotTest :: Diagram B
+rotTest = hcat [pTile, strutX 1, rot pTile]
+
+almostFish :: Diagram B
+almostFish = pTile === rTile
